@@ -9,7 +9,8 @@ var canvas = document.getElementById('canvas'),
     lastm = {},
     points = [],
     lines = [],
-    objects = [];
+    objects = [],
+    showGuideText = true;
 
 
 
@@ -19,11 +20,11 @@ start('squares');
 
 function start(scene) {
     if(scene === 'squares') {
-        let ret = addFigure(calcSquare(vec2(), 400, 10));
+        let ret = addFigure(calcSquare(vec2(30, 30), 400, 10));
         points = ret.points;
         lines = ret.lines;
 
-        ret = addFigure(calcSquare(vec2(30, 30), 400, 10));
+        ret = addFigure(calcSquare(vec2(), 400, 10));
         points = ret.points;
         lines = ret.lines;
         
@@ -160,6 +161,11 @@ function calcLineFormula(line, points = points) {
 
 function draw() {
     ctx.clearRect(0, 0, fieldW, fieldH);
+    
+    if(buttons[68])
+        showGuideText = false;
+    if(showGuideText)
+        drawGuideText();
     
     for(let i in lines) {
         lines[i].id = i;
@@ -371,7 +377,23 @@ function movePoint(point, vec2) {
     
     return point;
 }
-    
+
+function drawGuideText() {
+    ctx.beginPath();
+    ctx.fillStyle = 'darkgray';
+    ctx.font = "15px Arial";
+    ctx.fillText('Hello There!', 10, 25);
+    ctx.fillText('in this project I tried', 10, 40);
+    ctx.fillText('to check collisions of lines', 10, 55);
+    ctx.fillText('to play with it, you can:', 10, 70);
+    ctx.fillText('1: hold your mouse and move it &', 10, 85);
+    ctx.fillText('   one of the squares (or what is it) will move with it', 10, 100);
+    ctx.fillText('2: hold mouse and space key & square will', 10, 115);
+    ctx.fillText('   rotate around a center with moving of mouse', 10, 130);
+    ctx.fillText('Have fun!', 10, 145);
+    ctx.fillText('(press D to delete this)', 10, 160);
+    ctx.closePath();
+}
 
 
 
