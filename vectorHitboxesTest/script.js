@@ -28,11 +28,11 @@ function start(scene) {
         points = ret.points;
         lines = ret.lines;
         
-        lines.push({firstPoint: 0, secondPoint: 3, width: 10});
-        lines.push({firstPoint: 2, secondPoint: 1, width: 10});
-        
         lines.push({firstPoint: 4, secondPoint: 7, width: 10});
         lines.push({firstPoint: 6, secondPoint: 5, width: 10});
+        
+        lines.push({firstPoint: 0, secondPoint: 3, width: 10});
+        lines.push({firstPoint: 2, secondPoint: 1, width: 10});
         
     } else if(scene === 'lines') {
         let ret = addFigure(calcLine(vec2(), vec2(50)));
@@ -170,8 +170,15 @@ function draw() {
     for(let i in lines) {
         lines[i].id = i;
     }
-    
+        
     let collPoints = calcLinesCollision();
+    
+//    for(let i in collPoints) {
+//        if(parseInt(i) === collPoints.length - 1)
+//            drawLine(collPoints[i], collPoints[0], 'green', 10);
+//        else 
+//            drawLine(collPoints[i], collPoints[parseInt(i) + 1], 'green', 10);
+//    }
     
     drawLines(lines, points);
     
