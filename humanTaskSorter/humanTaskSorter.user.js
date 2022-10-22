@@ -1,6 +1,6 @@
 //
 // ==UserScript==
-// @name            HumanTasksSorter.user.js
+// @name            HumanTasksSorter
 // @author          MaxMorfiX
 // @namespace       https://human.ua/
 // @description     Human improvements
