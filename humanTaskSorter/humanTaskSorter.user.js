@@ -4,7 +4,7 @@
 // @author          MaxMorfiX
 // @namespace       https://human.ua/
 // @description     Human improvements
-// @include         https://*.human.ua/*
+// @include         https://*./human.ua/app/tasks/hometasks/actual/*
 // @run-at          document-end
 // @all_frames      true
 // @version         2022-10-17 21:25:33
