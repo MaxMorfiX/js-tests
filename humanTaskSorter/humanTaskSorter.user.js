@@ -4,7 +4,7 @@
 // @author          MaxMorfiX
 // @namespace       https://human.ua/
 // @description     Human improvements
-// @include         https://*./human.ua/app/tasks/hometasks/actual/*
+// @include         https://*.human.ua/*
 // @run-at          document-end
 // @all_frames      true
 // @version         2022-10-17 21:25:33
@@ -156,3 +156,13 @@ function sortTasks(tasks = tasks) {
     return false;
 }
 
+
+
+
+
+document.addEventListener('keypress', keyPress);
+function keyPress(e) {
+    if(e.which === 83 || e.which === 115) {
+        main();
+    }
+}
