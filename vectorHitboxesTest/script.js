@@ -162,7 +162,7 @@ function calcLineFormula(line, points = points) {
 function draw() {
     ctx.clearRect(0, 0, fieldW, fieldH);
     
-    if(buttons[68])
+    if(buttons[68] || buttons[72])
         showGuideText = false;
     if(showGuideText)
         drawGuideText();
@@ -387,7 +387,7 @@ function movePoint(point, vec2) {
 
 function drawGuideText() {
     ctx.beginPath();
-    ctx.fillStyle = 'darkgray';
+    ctx.fillStyle = 'black';
     ctx.font = "15px Arial";
     ctx.fillText('Hello There!', 10, 25);
     ctx.fillText('in this project I tried', 10, 40);
@@ -398,7 +398,7 @@ function drawGuideText() {
     ctx.fillText('2: hold mouse and space key & square will', 10, 115);
     ctx.fillText('   rotate around a center with moving of mouse', 10, 130);
     ctx.fillText('Have fun!', 10, 145);
-    ctx.fillText('(press D to delete this)', 10, 160);
+    ctx.fillText('(press H to hide guide)', 10, 160);
     ctx.closePath();
 }
 
