@@ -4,6 +4,8 @@ let ctx;
 let canvasShapes = {};
 
 canvasShapes.Universal = class {
+    
+    parent;
 
     strokeStyle;
     fillStyle;
@@ -46,6 +48,10 @@ canvasShapes.Universal = class {
         ctx.stroke();
         ctx.closePath();
     }
+    
+    setParent(parent) {
+        this.parent = parent;
+    }
 
 };
 
@@ -67,11 +73,17 @@ canvasShapes.Line = class extends canvasShapes.Universal {
         
     }
     
-    draw(offset, scale) {
+    draw() {
         this.startDraw();
+        
+        let offset = this.parent.parent.getComponent("transform").pos;
+        let scale = this.parent.parent.getComponent("transform").scale;
         
         let pos1 = canvasShapes.multPosByTransform(this.pos1, offset, scale);
         let pos2 = canvasShapes.multPosByTransform(this.pos2, offset, scale);
+        
+        pos1.y = fieldH - pos1.y;
+        pos2.y = fieldH - pos2.y;
         
         let width = canvasShapes.multLenghtByTransform(this.lineWidth, scale);
         
@@ -102,11 +114,16 @@ canvasShapes.Circle = class extends canvasShapes.Universal {
         this.center = center;
     }
     
-    draw(offset, scale) {
+    draw() {
         this.startDraw();
+        
+        let offset = this.parent.parent.getComponent("transform").pos;
+        let scale = this.parent.parent.getComponent("transform").scale;
         
         let pos = canvasShapes.multPosByTransform(this.center, offset, scale);
         let radius = canvasShapes.multLenghtByTransform(this.radius, scale);
+        
+        pos.y = fieldH - pos.y;
         
         ctx.arc(pos.x, pos.y, radius, 0, 2*Math.PI);
         

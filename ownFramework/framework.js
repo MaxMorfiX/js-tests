@@ -2,9 +2,9 @@
 
 "use strict";
 
-let canvas, ctx;
-
-let objects = [];
+let basicObjects = [];
+let fieldH = 680;
+let fieldW = 1280;
 
 let NoNameFramework = class {
     
@@ -14,12 +14,15 @@ let NoNameFramework = class {
 
         this.fitToSize();
 
-        setInterval(frameworkUpdate, 16.666666666);
+        setInterval(NoNameFramework.frameworkUpdate, 16.666666666);
     }
     
     static fitToSize() {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
+        
+        fieldH = canvas.height;
+        fieldW = canvas.width;
     }
     
     static calculateDeltaT() {
@@ -28,35 +31,27 @@ let NoNameFramework = class {
     
     static frameworkUpdate() {
 
-        let deltaT = calculateDeltaT();
+        let deltaT = NoNameFramework.calculateDeltaT();
 
-        for(let i = 0; i < objects.length; i++) {
-            let behavior = objects[i];
+        for(let i = 0; i < basicObjects.length; i++) {
+            let object = basicObjects[i];
 
-            behavior.update(deltaT);
+            object.update(deltaT);
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for(let i = 0; i < objects.length; i++) {
-            let behavior = objects[i];
+        for(let i = 0; i < basicObjects.length; i++) {
+            let object = basicObjects[i];
+            let texture = object.getComponent("texture");
+            
+            if(texture) {
+                texture.drawOnScreen();
+            }
 
-            behavior.drawOnScreen();
+            texture.drawOnScreen();
         }
         
-    }
-    
-    static checkObjectsClick() {
-        for(let i = 0; i < objects.length; i++) {
-            let obj = objects[i];
-            
-            if(typeof obj.onclick !== "undefined") {
-                continue;
-            }
-            
-            
-            
-        }
     }
     
 };

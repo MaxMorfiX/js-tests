@@ -38,6 +38,10 @@ function vec2(x, y) {
         y: y || 0
     };
     
+    if(typeof x === "object") {
+        returnValue = JSON.parse(JSON.stringify(x));
+    }
+    
     return returnValue;
 }
 
@@ -47,6 +51,16 @@ function mouseClick(action) {
     } else if (action === 'up' || action === 0 || action === false) {
         buttons.mouse = false;
     } else if (action === 'click' || action === 2) {
-        checkObjectsClick();
+//        checkObjectsClick();
     }
 }
+
+onmousemove = function (e) {
+    resentmxpos = m.x;
+    resentmypos = m.x;
+    
+    m.x = e.x;
+    m.y = canvas.height - e.y;
+    
+//    console.log(mx + ' ' + my);
+};
