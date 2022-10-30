@@ -3,58 +3,61 @@
 /*global m*/
 /*global basicObjectComponents*/
 
-class Ball extends BasicObject {
+let BallClass = class extends BasicObject {
     
+    static objects = [];
     color;
-    ballId = 0;
+    ballId;
+    pos;
     
-    constructor(pos, id, color) {
+    constructor(pos, color) {
         super();
         
+        this.pos = this.getComponent("transform").pos;
+        
+        this.ballId = BallClass.objects.length;
+        BallClass.objects.push(this);
+        
         if(pos) {
-            this.getComponent("transform").pos = pos;
+            this.setPos(pos);
         }
         
         this.color = color;
-        this.ballId = id;
         
         this.addComponent(this.generateTexture(color));
+        this.addComponent(new basicObjectComponents.KinematicBody());
+        this.getComponent("kinematicBody").gravityScale = vec2();
         
     }
     
     generateTexture(color) {
         return new basicObjectComponents.Texture([
-            new canvasShapes.Circle(vec2(), 30, {strokeStyle: color})
+            new canvasShapes.Circle(vec2(), 10, {strokeStyle: color}),
+            new canvasShapes.Circle(vec2(), 6, {strokeStyle: color, strokeWidth: 5})
         ]);
     }
     
-    update = function(deltaT) {
-        if(this.ballId === 2) {
-            if(buttons.mouse && buttons[66]) {
-                this.setPos(vec2(m));
-            }
-        }
-        if(this.ballId === 1) {
-            if(buttons.mouse && buttons[32]) {
-                this.setPos(vec2(m));
-            }
-        }
-        if(this.ballId === 0) {
-            if(buttons.mouse && !buttons[32] && !buttons[66]) {
-                this.setPos(vec2(m));
-            }
+    update(deltaT) {
+        if(!buttons.mouse) {
+            return;
         }
         
-        if(buttons[37]) {
-            this.move(vec2(1*deltaT, 0));
-        }
+        let kb = this.getComponent("kinematicBody");
+        
+        let force = {
+            x: (m.x - this.pos.x)*deltaT*0.0001,
+            y: (m.y - this.pos.y)*deltaT*0.0001
+        };
+        
+        kb.addForce(force);
     }
-    
+};
+
+new BallClass(vec2(200, 200), "blue");
+
+for(let i = 0; i < 100; i++) {
+    new BallClass({
+        x: Math.random()*1280,
+        y: Math.random()*680
+    });
 }
-
-let ball1 = new Ball(vec2(300, 100), 0, "blue");
-
-let ball2 = new Ball(vec2(350, 130), 1);
-ball1.addChild(ball2, "ball2");
-let ball3 = new Ball(vec2(400, 100), 2);
-ball1.addChild(ball3, "ball3");

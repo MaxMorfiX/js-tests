@@ -6,7 +6,7 @@ let basicObjects = [];
 let fieldH = 680;
 let fieldW = 1280;
 
-let NoNameFramework = class {
+let fw = class {
     
     static onLoad() {
         canvas = document.getElementById("canvas");
@@ -14,7 +14,7 @@ let NoNameFramework = class {
 
         this.fitToSize();
 
-        setInterval(NoNameFramework.frameworkUpdate, 16.666666666);
+        setInterval(fw.frameworkUpdate, 16.666666666);
     }
     
     static fitToSize() {
@@ -31,7 +31,7 @@ let NoNameFramework = class {
     
     static frameworkUpdate() {
 
-        let deltaT = NoNameFramework.calculateDeltaT();
+        let deltaT = fw.calculateDeltaT();
 
         for(let i = 0; i < basicObjects.length; i++) {
             let object = basicObjects[i];
@@ -39,8 +39,17 @@ let NoNameFramework = class {
             object.update(deltaT);
         }
 
+        for(let i = 0; i < basicObjects.length; i++) {
+            let object = basicObjects[i];
+            let body = object.getComponent("kinematicBody");
+            
+            if(body) {
+                body.update();
+            }
+        }
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        
         for(let i = 0; i < basicObjects.length; i++) {
             let object = basicObjects[i];
             let texture = object.getComponent("texture");
@@ -48,8 +57,6 @@ let NoNameFramework = class {
             if(texture) {
                 texture.drawOnScreen();
             }
-
-            texture.drawOnScreen();
         }
         
     }
