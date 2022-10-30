@@ -1,5 +1,24 @@
 const PI = Math.PI;
 
+let Vector2 = class {
+    x = 0;
+    y = 0;
+    
+    constructor(x, y) {
+        this.x = x || 0;
+        this.y = y || 0;
+        
+        if(typeof x === "object") {
+            this.x = x.x;
+            this.y = x.y;
+        }
+    }
+    
+    get magnitude() {
+        return Math.sqrt(this.x*this.x + this.y*this.y);
+    }
+};
+
 let m = vec2();
 let buttons = {};
 
@@ -33,16 +52,7 @@ function KeyPress(e) {
 }
 
 function vec2(x, y) {
-    let returnValue = {
-        x: x || 0,
-        y: y || 0
-    };
-    
-    if(typeof x === "object") {
-        returnValue = JSON.parse(JSON.stringify(x));
-    }
-    
-    return returnValue;
+    return new Vector2(x, y);
 }
 
 function mouseClick(action) {

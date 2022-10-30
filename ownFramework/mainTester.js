@@ -1,4 +1,5 @@
 /*global canvasShapes*/
+/*global camera*/
 /*global buttons*/
 /*global m*/
 /*global basicObjectComponents*/
@@ -44,15 +45,46 @@ let BallClass = class extends BasicObject {
         
         let kb = this.getComponent("kinematicBody");
         
+        let diff = vec2(worldm.x - this.pos.x, worldm.y - this.pos.y);
+        
         let force = {
-            x: (m.x - this.pos.x)*deltaT*0.0001,
-            y: (m.y - this.pos.y)*deltaT*0.0001
+            x: diff.x*deltaT*1,
+            y: diff.y*deltaT*1
         };
+        
+        force.x /= diff.magnitude*diff.magnitude;
+        force.y /= diff.magnitude*diff.magnitude;
         
         kb.addForce(force);
     }
 };
+let GameController = class extends BasicObject {
+    constructor() {super();}
+    
+    update = function(deltaT) {
+        if(buttons[191]) {
+            camera.zoom += 1.1*deltaT*0.001;
+        }
+        if(buttons[190]) {
+            camera.zoom -= 1.1*deltaT*0.001;
+        }
+        
+        if(buttons[37]) {
+            camera.pos.x -= deltaT*0.1/camera.zoom;
+        }
+        if(buttons[39]) {
+            camera.pos.x += deltaT*0.1/camera.zoom;
+        }
+        if(buttons[40]) {
+            camera.pos.y -= deltaT*0.1/camera.zoom;
+        }
+        if(buttons[38]) {
+            camera.pos.y += deltaT*0.1/camera.zoom;
+        }
+    }
+};
 
+new GameController();
 new BallClass(vec2(200, 200), "blue");
 
 for(let i = 0; i < 100; i++) {

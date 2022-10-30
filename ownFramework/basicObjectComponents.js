@@ -86,8 +86,6 @@ basicObjectComponents.KinematicBody = class extends basicObjectComponents.Univer
         this.vel.y += attractionVec.y;
         
         this.parent.move(this.vel);
-        
-        console.log(`attractionVec: ${JSON.stringify(attractionVec)}, vel: ${JSON.stringify(this.vel)}, pos: ${JSON.stringify(this.parent.getComponent("transform").pos)}`);
     }
     
     addForce(forceVec) {

@@ -1,3 +1,6 @@
+let fieldH = 680;
+let fieldW = 1280;
+
 let canvas;
 let ctx;
 
@@ -82,10 +85,12 @@ canvasShapes.Line = class extends canvasShapes.Universal {
         let pos1 = canvasShapes.multPosByTransform(this.pos1, offset, scale);
         let pos2 = canvasShapes.multPosByTransform(this.pos2, offset, scale);
         
-        pos1.y = fieldH - pos1.y;
-        pos2.y = fieldH - pos2.y;
+        pos1 = camera.world2CameraPoint(pos1);
+        pos2 = camera.world2CameraPoint(pos2);
         
         let width = canvasShapes.multLenghtByTransform(this.lineWidth, scale);
+        width = camera.world2CameraLenght(width);
+        ctx.lineWidth = width;
         
         ctx.moveTo(pos1.x, pos1.y);
         ctx.lineTo(pos2.x, pos2.y);
@@ -123,9 +128,13 @@ canvasShapes.Circle = class extends canvasShapes.Universal {
         let pos = canvasShapes.multPosByTransform(this.center, offset, scale);
         let radius = canvasShapes.multLenghtByTransform(this.radius, scale);
         
-        pos.y = fieldH - pos.y;
+        pos = camera.world2CameraPoint(pos);
         
-        ctx.arc(pos.x, pos.y, radius, 0, 2*Math.PI);
+        let width = canvasShapes.multLenghtByTransform(this.lineWidth, scale);
+        width = camera.world2CameraLenght(width);
+        ctx.lineWidth = width;
+        
+        ctx.arc(pos.x, pos.y, camera.world2CameraLenght(radius), 0, 2*Math.PI);
         
         this.endDraw();
     }
@@ -152,4 +161,49 @@ canvasShapes.multLenghtByTransform = function(lenght, scale) {
     retLenght *= scale;
     
     return retLenght;
+};
+
+let Camera = class {
+    pos = vec2();
+    zoom = 1;
+    
+    constructor(params = {}) {
+        this.pos = params.pos || this.pos;
+        this.zoom = params.zoom || this.zoom;
+    }
+    
+    world2CameraPoint(point) {
+        let retPoint = vec2(point);
+        
+        retPoint.x -= this.pos.x;
+        retPoint.y -= this.pos.y;
+        
+        retPoint.x *= this.zoom;
+        retPoint.y *= this.zoom;
+        
+        retPoint.y = fieldH - retPoint.y;
+        
+        return retPoint;
+    }
+    
+    camera2WorldPoint(point) {
+        let retPoint = vec2(point);
+        
+        retPoint.y = fieldH - retPoint.y;
+        
+        retPoint.x /= this.zoom;
+        retPoint.y /= this.zoom;
+        
+        retPoint.x += this.pos.x;
+        retPoint.y += this.pos.y;
+        
+        return retPoint;
+    }
+    
+    world2CameraLenght(lenght) {
+        return lenght*this.zoom;
+    }
+    Camera2WorldLenght(lenght) {
+        return lenght/this.zoom;
+    }
 };

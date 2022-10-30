@@ -1,10 +1,13 @@
 /*global canvasShapes*/
+/*global fieldH*/
+/*global fieldW*/
 
 "use strict";
 
 let basicObjects = [];
-let fieldH = 680;
-let fieldW = 1280;
+let camera = new Camera();
+
+let worldm = vec2();
 
 let fw = class {
     
@@ -30,6 +33,8 @@ let fw = class {
     }
     
     static frameworkUpdate() {
+        
+        worldm = camera.camera2WorldPoint(vec2(m.x, fieldH - m.y));
 
         let deltaT = fw.calculateDeltaT();
 
