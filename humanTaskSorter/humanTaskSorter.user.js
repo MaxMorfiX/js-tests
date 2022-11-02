@@ -1,6 +1,6 @@
 //
 // ==UserScript==
-// @name            HumanTasksSorterBeta
+// @name            HumanTasksSorter
 // @author          MaxMorfiX
 // @namespace       https://human.ua/
 // @description     Human improvements
