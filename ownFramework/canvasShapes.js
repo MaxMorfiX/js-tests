@@ -163,11 +163,15 @@ canvasShapes.multLenghtByTransform = function(lenght, scale) {
     return retLenght;
 };
 
-let Camera = class {
-    pos = vec2();
+let Camera = class extends BasicObject {
+    pos;
     zoom = 1;
     
     constructor(params = {}) {
+        super();
+
+        this.pos = this.getComponent("transform").pos;
+        
         this.pos = params.pos || this.pos;
         this.zoom = params.zoom || this.zoom;
     }

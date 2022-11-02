@@ -9,9 +9,7 @@ class BasicObject {
     #parent = "window";
     #uniqueId = 0;
     
-    #components = {
-        "transform": new basicObjectComponents.Transform()
-    };
+    #components = {};
     
     get uniqueId() {
         return this.#uniqueId;
@@ -106,6 +104,8 @@ class BasicObject {
         this.#uniqueId = basicObjects.length;
         
         basicObjects.push(this);
+        
+        this.addComponent(new basicObjectComponents.Transform());
     };
     
     update(){};

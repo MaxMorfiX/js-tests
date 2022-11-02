@@ -71,12 +71,15 @@ basicObjectComponents.KinematicBody = class extends basicObjectComponents.Univer
     velocity = vec2();
     vel = this.velocity;
     
+    limitVel = true;
+    velLimiter = 100;
+    
     constructor(params = {}) {
         super();
         
-        this.mass = params.mass || 1;
-        this.gravityScale = params.gravityScale || 1;
-        this.velocity = params.velocity || 1;
+        this.mass = params.mass || this.mass;
+        this.gravityScale = params.gravityScale || this.gravityScale;
+        this.velocity = params.velocity || this.velocity;
     }
     
     update() {
@@ -85,11 +88,22 @@ basicObjectComponents.KinematicBody = class extends basicObjectComponents.Univer
         this.vel.x += attractionVec.x;
         this.vel.y += attractionVec.y;
         
+        if(this.limitVel) {
+            if(Math.abs(this.vel.x) > this.velLimiter) {
+                this.vel.y *= this.velLimiter/Math.abs(this.vel.x);
+                this.vel.x *= this.velLimiter/Math.abs(this.vel.x);
+            }
+            if(Math.abs(this.velocity.y) > this.velLimiter) {
+                this.vel.x *= this.velLimiter/Math.abs(this.vel.y);
+                this.vel.y *= this.velLimiter/Math.abs(this.vel.y);
+            }
+        }
+        
         this.parent.move(this.vel);
     }
     
     addForce(forceVec) {
-        this.vel.x += forceVec.x*this.mass;
-        this.vel.y += forceVec.y*this.mass;
+        this.vel.x += forceVec.x/this.mass;
+        this.vel.y += forceVec.y/this.mass;
     }
 };
