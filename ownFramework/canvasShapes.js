@@ -82,13 +82,13 @@ canvasShapes.Line = class extends canvasShapes.Universal {
         let offset = this.parent.parent.getComponent("transform").pos;
         let scale = this.parent.parent.getComponent("transform").scale;
         
-        let pos1 = canvasShapes.multPosByTransform(this.pos1, offset, scale);
-        let pos2 = canvasShapes.multPosByTransform(this.pos2, offset, scale);
+        let pos1 = multPosByTransform(this.pos1, offset, scale);
+        let pos2 = multPosByTransform(this.pos2, offset, scale);
         
         pos1 = camera.world2CameraPoint(pos1);
         pos2 = camera.world2CameraPoint(pos2);
         
-        let width = canvasShapes.multLenghtByTransform(this.lineWidth, scale);
+        let width = multLenghtByTransform(this.lineWidth, scale);
         width = camera.world2CameraLenght(width);
         ctx.lineWidth = width;
         
@@ -125,12 +125,12 @@ canvasShapes.Circle = class extends canvasShapes.Universal {
         let offset = this.parent.parent.getComponent("transform").pos;
         let scale = this.parent.parent.getComponent("transform").scale;
         
-        let pos = canvasShapes.multPosByTransform(this.center, offset, scale);
-        let radius = canvasShapes.multLenghtByTransform(this.radius, scale);
+        let pos = multPosByTransform(this.center, offset, scale);
+        let radius = multLenghtByTransform(this.radius, scale);
         
         pos = camera.world2CameraPoint(pos);
         
-        let width = canvasShapes.multLenghtByTransform(this.lineWidth, scale);
+        let width = multLenghtByTransform(this.lineWidth, scale);
         width = camera.world2CameraLenght(width);
         ctx.lineWidth = width;
         
@@ -143,7 +143,7 @@ canvasShapes.Circle = class extends canvasShapes.Universal {
 
 
 
-canvasShapes.multPosByTransform = function(pos, offset, scale) {
+let multPosByTransform = function(pos, offset, scale) {
     let retPos = JSON.parse(JSON.stringify(pos));;
     
     retPos.x *= scale;
@@ -155,7 +155,7 @@ canvasShapes.multPosByTransform = function(pos, offset, scale) {
     return retPos;
 };
 
-canvasShapes.multLenghtByTransform = function(lenght, scale) {
+let multLenghtByTransform = function(lenght, scale) {
     let retLenght = lenght;
     
     retLenght *= scale;

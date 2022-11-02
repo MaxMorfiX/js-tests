@@ -44,20 +44,26 @@ basicObjectComponents.Transform = class extends basicObjectComponents.Universal 
     get name() {return this.#name;}
     
     pos = vec2();
-    scale = 1;
     
-    constructor(pos, scale) {
+    get x() {return this.pos.x;}
+    set x(val) {this.pos.x = val;}
+    
+    get y() {return this.pos.y;}
+    set y(val) {this.pos.y = val;}
+    
+    scale = 1;
+    rotation = 0;
+    
+    constructor(pos, rotation, scale) {
         super();
-        
-        if(pos) {
-            
-            this.pos = pos;
-            
-            if(scale) {
-                this.scale = scale;
-            }
-            
-        }
+        this.pos = pos || this.pos;
+        this.rotation = rotation || this.rotation;
+        this.scale = scale || this.scale;
+    }
+    
+    move(moveVec) {
+        this.pos.x += moveVec.x;
+        this.pos.y += moveVec.y;
     }
 };
 
@@ -105,5 +111,44 @@ basicObjectComponents.KinematicBody = class extends basicObjectComponents.Univer
     addForce(forceVec) {
         this.vel.x += forceVec.x/this.mass;
         this.vel.y += forceVec.y/this.mass;
+    }
+};
+
+basicObjectComponents.Collider = class extends basicObjectComponents.Universal {
+    
+    #name = "collider";
+    get name() {return this.#name;}
+    
+    shapes = [];
+    currCollisions = {};
+    
+    constructor(colliderShapes) {
+        super();
+        
+        if(colliderShapes) {
+            this.colliderShapes = colliderShapes;
+        }
+        
+        for(let i = 0; i < this.shapes.length; i++) {
+            let shape = this.shapes[i];
+            
+            shape.setParent(this);
+        }
+    }
+    
+    isCollidingWith(col) {
+        
+        for(let i = 0; i < this.shapes.length; i++) {
+            for(let j = 0; j < col.shapes.length; j++) {
+                
+                let shape1 = this.shapes[i];
+                let shape2 = col.shapes[j];
+                
+                if(shape1.isCollidingWith(shape2)) {
+                    return true;
+                }
+            }
+        }
+        
     }
 };

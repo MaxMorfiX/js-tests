@@ -72,14 +72,14 @@ class BasicObject {
                 let obj = this.#childsNamed[i];
                 if(obj === childInsideId) {
                     this.#childsNamed.splice(i, 1);
+                    return;
                 }
             }
         }
     }
     
     move(moveVec) {
-        this.getComponent("transform").pos.x += moveVec.x;
-        this.getComponent("transform").pos.y += moveVec.y;
+        this.getComponent("transform").move(moveVec);
         
         for(let i = 0; i < this.#childs.length; i++) {
             let child = this.#childs[i];
@@ -97,7 +97,7 @@ class BasicObject {
         }
         
         currPos.x = pos.x;
-        currPos.y = pos.y;        
+        currPos.y = pos.y;      
     }
     
     constructor(){
@@ -106,6 +106,7 @@ class BasicObject {
         basicObjects.push(this);
         
         this.addComponent(new basicObjectComponents.Transform());
+        this.pos = this.getComponent("transform").pos;
     };
     
     update(){};
