@@ -60,8 +60,8 @@ canvasShapes.Universal = class {
 
 canvasShapes.Line = class extends canvasShapes.Universal {
     
-    pos1;
-    pos2;
+    pos1 = vec2();
+    pos2 = vec2();
     
     constructor(pos1, pos2, params = {}) {
         
@@ -101,7 +101,7 @@ canvasShapes.Line = class extends canvasShapes.Universal {
 };
 canvasShapes.Circle = class extends canvasShapes.Universal {
     
-    center;
+    center = vec2();
     radius;
     
     constructor(center, radius, params = {}) {
@@ -140,6 +140,60 @@ canvasShapes.Circle = class extends canvasShapes.Universal {
     }
     
 };
+
+canvasShapes.Rect = class extends canvasShapes.Universal {
+    
+    pos1 = vec2();
+    pos2 = vec2();
+    
+    get height() {return this.pos2.y - this.pos1.y;}
+    get width() {return this.pos2.x - this.pos1.x;}
+    
+    constructor(pos1, pos2, params = {}) {
+        
+        if(!pos1 || !pos2) {
+            throw new Error("You need to set positions of line");
+        }
+        
+        super(params);
+        
+        this.pos1 = pos1;
+        this.pos2 = pos2;
+        
+    }
+    
+    draw() {
+        this.startDraw();
+        
+        let offset = this.parent.parent.getComponent("transform").pos;
+        let scale = this.parent.parent.getComponent("transform").scale;
+        
+        let pos1 = multPosByTransform(this.pos1, offset, scale);
+        let pos2 = multPosByTransform(this.pos2, offset, scale);
+        
+        pos1 = camera.world2CameraPoint(pos1);
+        pos2 = camera.world2CameraPoint(pos2);
+        
+        let width = multLenghtByTransform(this.lineWidth, scale);
+        width = camera.world2CameraLenght(width);
+        ctx.lineWidth = width;
+        
+        let diff = vec2(pos1.x - pos2.x, pos2.y - pos1.y);
+        
+        ctx.rect(pos2.x, pos1.y, diff.x, diff.y);
+        
+        this.endDraw();
+    }
+};
+canvasShapes.Square = class extends canvasShapes.Rect {
+    constructor(center, size, params) {
+        let pos1 = vec2(center.x - size/2, center.y - size/2);
+        let pos2 = vec2(center.x + size/2, center.y + size/2);
+        
+        super(pos1, pos2, params);
+    }
+};
+
 
 
 

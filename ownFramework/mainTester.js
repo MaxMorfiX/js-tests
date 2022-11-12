@@ -3,157 +3,81 @@
 /*global buttons*/
 /*global m*/
 /*global basicObjectComponents*/
+/*global keyPressFunctions*/
 
-let Ball = class extends BasicObject {
+class Player extends BasicObject {
     
-    static globalG = 6.67384;
-    static objects = [];
-    color;
-    ballId;
-    pos;
+    moveSpeed = 1;
     
-    velLimiterOnCenter = 0.01;
-    
-    constructor(pos, params = {}) {
+    constructor() {
         super();
         
-        this.pos = this.getComponent("transform").pos;
+        this.addComponent(this.generateTexture());
+        this.addComponent(new basicObjectComponents.KinematicBody([new colliderShapes.Square(vec2(), 30)]));
+        this.addComponent(new basicObjectComponents.Collider());
         
-        this.ballId = Ball.objects.length;
-        Ball.objects.push(this);
-        
-        if(pos) {
-            this.setPos(pos);
-        }
-        
-        this.color = params.color;
-        
-        this.addComponent(this.generateTexture(params.color, params.radius));
-        this.addComponent(new basicObjectComponents.KinematicBody());
-        this.getComponent("kinematicBody").gravityScale = vec2();
-        
-        this.getComponent("kinematicBody").mass = params.mass || 0.1;
+        this.pos.x = 400;
+        this.pos.y = 300;
     }
     
-    generateTexture(color, radius) {
+    generateTexture() {
         return new basicObjectComponents.Texture([
-            new canvasShapes.Circle(vec2(), radius || 30, {strokeStyle: color, fillOrNot: true, fillStyle: color})
-//            new canvasShapes.Circle(vec2(), 6, {strokeStyle: color, strokeWidth: 5})
+            new canvasShapes.Square(vec2(), 30),
+//            new canvasShapes.Line(vec2(), vec2(30, -30)),
+            new canvasShapes.Square(vec2(), 20),
+            new canvasShapes.Square(vec2(), 15),
+            new canvasShapes.Square(vec2(), 10)
         ]);
     }
     
     update(deltaT) {
         
-        this.attractToBalls(deltaT);
-        
-        if(!buttons.mouse) {
-            return;
-        }
-        
         let kb = this.getComponent("kinematicBody");
         
-        let diff = vec2(worldm.x - this.pos.x, worldm.y - this.pos.y);
-        
-        let force = {
-            x: diff.x*deltaT*1,
-            y: diff.y*deltaT*1
-        };
-        
-        force.x /= diff.magnitude*diff.magnitude;
-        force.y /= diff.magnitude*diff.magnitude;
-        
-        if(diff.magnitude < 5) {
-            if(Math.abs(force.x) > this.velLimiterOnCenter) {
-                force.y *= this.velLimiterOnCenter/Math.abs(force.x);
-                force.x *= this.velLimiterOnCenter/Math.abs(force.x);
-            }
-            if(Math.abs(force.y) > this.velLimiterOnCenter) {
-                force.x *= this.velLimiterOnCenter/Math.abs(force.y);
-                force.y *= this.velLimiterOnCenter/Math.abs(force.y);
-            }
-        }
-        
-        kb.addForce(force);
-    }
-    
-    attractToBalls(deltaT) {
-        
-        let finalForce = vec2();
-        
-        for(let i in Ball.objects) {
-            let ball = Ball.objects[i];
-            
-            if(ball === this) continue;
-            
-            let ballPos = ball.getComponent("transform").pos;
-            let ballMass = ball.getComponent("kinematicBody").mass;
-            
-            let diff = vec2(ballPos.x - this.pos.x, ballPos.y - this.pos.y);
-        
-            let force = {
-                x: diff.x*deltaT*ballMass*Ball.globalG,
-                y: diff.y*deltaT*ballMass*Ball.globalG
-            };
-
-            force.x /= diff.magnitude*diff.magnitude;
-            force.y /= diff.magnitude*diff.magnitude;
-
-            if(diff.magnitude < 5) {
-                if(Math.abs(force.x) > this.velLimiterOnCenter) {
-                    force.y *= this.velLimiterOnCenter/Math.abs(force.x);
-                    force.x *= this.velLimiterOnCenter/Math.abs(force.x);
-                }
-                if(Math.abs(force.y) > this.velLimiterOnCenter) {
-                    force.x *= this.velLimiterOnCenter/Math.abs(force.y);
-                    force.y *= this.velLimiterOnCenter/Math.abs(force.y);
-                }
-            }
-            
-            finalForce.x += force.x;
-            finalForce.y += force.y;
-            
-        }
-        
-        this.getComponent("kinematicBody").addForce(finalForce);
-        
-    }
-};
-let GameController = class extends BasicObject {
-    constructor() {
-        super();
-        
-        camera.zoom = 0.1;
-    }
-    
-    update = function(deltaT) {
-        if(buttons[191]) {
-            camera.zoom += 1.1*deltaT*0.001*camera.zoom;
-        }
-        if(buttons[190]) {
-            camera.zoom -= 1.1*deltaT*0.001*camera.zoom;
-        }
-        
         if(buttons[37]) {
-            camera.pos.x -= deltaT*0.1/camera.zoom;
+            kb.vel.x = -deltaT*this.moveSpeed;
         }
         if(buttons[39]) {
-            camera.pos.x += deltaT*0.1/camera.zoom;
+            kb.vel.x = deltaT*this.moveSpeed;
         }
-        if(buttons[40]) {
-            camera.pos.y -= deltaT*0.1/camera.zoom;
+        
+        if(!buttons[37] && !buttons[39]) {
+            kb.vel.x = 0;
         }
-        if(buttons[38]) {
-            camera.pos.y += deltaT*0.1/camera.zoom;
-        }
+        
     }
-};
-
-new GameController();
-new Ball(vec2(200, 200), {color: "blue", mass: 1, radius: 100});
-
-for(let i = 0; i < 10; i++) {
-    new Ball({
-        x: Math.random()*1280,
-        y: Math.random()*680
-    });
+    
+    jump() {
+        this.getComponent("kinematicBody").vel.y = 20;
+    }
 }
+class Block extends BasicObject {
+    constructor(pos) {
+        super();
+        
+        this.pos.x = pos.x;
+        this.pos.y = pos.y;
+        
+        this.addComponent(this.generateTexture());
+        this.addComponent(new basicObjectComponents.KinematicBody([new colliderShapes.Square(vec2(), 30)]));
+    }
+    
+    generateTexture() {
+        return new basicObjectComponents.Texture([
+            new canvasShapes.Square(vec2(), 30, {fillOrNot: true, fillStyle: "blue"})
+        ]);
+    }
+}
+
+let blocks = [
+    new Block(vec2(400, 270)),
+    new Block(vec2(430, 270)),
+    new Block(vec2(370, 270))
+];
+
+let player = new Player();
+
+keyPressFunctions[32] = function() {player.jump();};
+
+
+//6,67430 = G

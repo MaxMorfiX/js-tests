@@ -37,20 +37,13 @@ let fw = class {
         worldm = camera.camera2WorldPoint(vec2(m.x, fieldH - m.y));
 
         let deltaT = fw.calculateDeltaT();
+        
+        fw.handleKinematicBodys();
 
         for(let i = 0; i < basicObjects.length; i++) {
             let object = basicObjects[i];
 
             object.update(deltaT);
-        }
-
-        for(let i = 0; i < basicObjects.length; i++) {
-            let object = basicObjects[i];
-            let body = object.getComponent("kinematicBody");
-            
-            if(body) {
-                body.update();
-            }
         }
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -114,6 +107,17 @@ let fw = class {
                         col2.onBodyExit(col1);
                     }
                 }
+            }
+        }
+    }
+    
+    static handleKinematicBodys() {
+        for(let i = 0; i < basicObjects.length; i++) {
+            let object = basicObjects[i];
+            let body = object.getComponent("kinematicBody");
+            
+            if(body) {
+                body.update();
             }
         }
     }

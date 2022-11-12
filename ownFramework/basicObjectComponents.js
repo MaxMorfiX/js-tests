@@ -62,8 +62,11 @@ basicObjectComponents.Transform = class extends basicObjectComponents.Universal 
     }
     
     move(moveVec) {
-        this.pos.x += moveVec.x;
-        this.pos.y += moveVec.y;
+        this.pos = this.calcMove(moveVec);
+    }
+    
+    calcMove(moveVec) {
+        return vec2(this.pos.x + moveVec.x, this.pos.y + moveVec.y);
     }
 };
 
@@ -111,6 +114,10 @@ basicObjectComponents.KinematicBody = class extends basicObjectComponents.Univer
     addForce(forceVec) {
         this.vel.x += forceVec.x/this.mass;
         this.vel.y += forceVec.y/this.mass;
+    }
+    
+    safeMove(moveVec) {
+        
     }
 };
 

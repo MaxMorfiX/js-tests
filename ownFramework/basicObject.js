@@ -86,6 +86,7 @@ class BasicObject {
             child.move(moveVec);
         }
     }
+    
     setPos(pos) {
         let currPos = this.getComponent("transform").pos;
         let diff = vec2(pos.x - currPos.x, pos.y - currPos.y);
