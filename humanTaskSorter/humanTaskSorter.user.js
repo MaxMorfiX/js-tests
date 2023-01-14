@@ -44,18 +44,15 @@ function main() {
 
     console.log(tasks);
 
-    let iterationsLeft = 100;
-
+    let iterationsLeft = 1000;
 
     while (sortTasks(tasks) && iterationsLeft) {
         iterationsLeft--;
         tasks = getHometasks();
     }
 
-
+    console.log(JSON.stringify("Iterations left: " + iterationsLeft));
 }
-
-
 
 function getHometasks() {
     let tasksObjs = $j(".course-analytics-assessment-item");
@@ -82,7 +79,7 @@ class Task {
     $obj;
 
     date = {
-        month: 13,
+        month: 100,
         day: 32
     }
 
@@ -136,7 +133,7 @@ class Task {
 
 function monthNameToNum(monthName) {
     let months = {
-        "Січ": 1,
+        "Січ": 13, // as this is the next year
         "Лют": 2,
         "Бер": 3,
         "Квіт": 4,
@@ -160,25 +157,22 @@ function monthNameToNum(monthName) {
 }
 
 function sortTasks(tasks = tasks) {
+    let f_there_were_changes = false;
     for(let i = 0; i < tasks.length; i++) {
+        let task1 = tasks[i];
         for(let j = i+1; j < tasks.length; j++) {
-
-            let task1 = tasks[i];
             let task2 = tasks[j];
 
             let compareResult = task1.compareWithTask(task2);
 
             if(compareResult > 0) {
-                console.log(JSON.stringify("will place task 1 after task 2 "));
-                console.log(task2);
-                console.log(task1);
                 task2.after(task1);
-                return true;
+                f_there_were_changes = true;
             }
         }
     }
 
-    return false;
+    return f_there_were_changes;
 }
 
 function sortTasksNew(sortTasks = tasks) {
