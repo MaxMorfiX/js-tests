@@ -232,3 +232,15 @@ class NewArray extends Array {
         this[x] = b;
     }
 }
+
+
+setInterval(changeTitle, 5000);
+setTimeout(changeTitle, 1000);
+
+function changeTitle() {
+    $j("title").text(getTaskCourseName());
+}
+
+function getTaskCourseName() {
+    return $j(".header3__sub-title").text().trim();
+}
