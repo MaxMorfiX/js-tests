@@ -52,6 +52,15 @@ function main() {
     }
 
     console.log(JSON.stringify("Iterations left: " + iterationsLeft));
+
+    renum(tasks);
+}
+
+function renum(tasks) {
+    for (var i=0; i < tasks.length; i++) {
+        var div = $j("<div style='position: relative; top: -20px; left: -120px; weight: bold;'>" + (i + 1) + "</div>");
+        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(div);
+    }
 }
 
 function getHometasks() {
@@ -133,7 +142,7 @@ class Task {
 
 function monthNameToNum(monthName) {
     let months = {
-        "Січ": 13, // as this is the next year
+        "Січ": 1,
         "Лют": 2,
         "Бер": 3,
         "Квіт": 4,
