@@ -54,12 +54,25 @@ function main() {
     console.log(JSON.stringify("Iterations left: " + iterationsLeft));
 
     renum(tasks);
+    init_ignore_link_handler(tasks);
 }
 
 function renum(tasks) {
+    $j(".task_number, .ignore_task").remove();;
+
     for (var i=0; i < tasks.length; i++) {
-        var div = $j("<div style='position: relative; top: -20px; left: -120px; weight: bold;'>" + (i + 1) + "</div>");
-        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(div);
+        let color = tasks[i].isIgnored ? 'red' : 'green';
+        let text = tasks[i].isIgnored ? 'DEL' : 'ACT';
+        let opacity = tasks[i].isIgnored ? '0.4' : '1';
+        var counter_div = $j("<div class='task_number' style='position: relative; top: -20px; left: -120px; weight: bold;'>" + (i + 1) + "</div>");
+        var ignore_div = $j("<div data-uid='" + tasks[i].uid + "' class='ignore_task' \n\
+                                  style='position: relative; top: 12px; left: -140px; weight: bold; font-weight: bold; color: " + color + ";'>\n\
+                                " + text + "\n\
+                            </div>");
+        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(counter_div);
+        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(ignore_div);
+        
+        tasks[i].$obj.css("opacity", opacity);
     }
 }
 
@@ -95,6 +108,8 @@ class Task {
     course = "";
     status = "";
     name = "";
+    uid = "";
+    isIgnored = false;
 
     constructor(obj) {
         this.$obj = $j(obj);
@@ -115,6 +130,16 @@ class Task {
         if(this.$obj.find(".course-theme-details__title").length !== 0) {
             this.name = this.$obj.find(".course-theme-details__title").text().trim();
         }
+        
+        this.uid = this.course + "_" + this.name + "_" + this.date.day + "_" + this.date.month;
+
+        let curr_ignored = localStorage.getItem('ignored_tasks_ls') || [];
+
+        this.isIgnored = curr_ignored.includes(this.uid) ? 1  : 0;
+        if (this.isIgnored) {
+            // hasck as sorting by ignored flag is slow for some reason
+            this.date.month = 12;
+        }
     }
 
     after(task) {
@@ -122,6 +147,11 @@ class Task {
     }
 
     compareWithTask(task) {
+        // for some reason makes sort very slow
+//        if(this.isIgnored > task.isIgnored) {
+//
+//            return 1;
+//        }
         if(this.date.month > task.date.month) {
             return 1;
         }
@@ -210,10 +240,6 @@ function displayTasks(displayTasks = tasks) {
     }
 }
 
-
-
-
-
 document.addEventListener('keypress', keyPress);
 function keyPress(e) {
     if(e.which === 83 || e.which === 115) {
@@ -243,4 +269,45 @@ function changeTitle() {
 
 function getTaskCourseName() {
     return $j(".header3__sub-title").text().trim();
+}
+
+function init_ignore_link_handler(tasks) {
+    $j(document).on("click", ".ignore_task", function() {
+        let curr_uid = $j(this).data('uid');
+        let curr_ignored = get_ignored_tasks();
+        let isIgnored = null;
+
+        if (curr_ignored.includes(curr_uid)) {
+            curr_ignored = curr_ignored.filter(item => item !== curr_uid)
+            isIgnored = false;
+            console.log(JSON.stringify("Removing from ignored: " + curr_uid));
+        } else {
+            curr_ignored.push(curr_uid);
+            isIgnored = true;
+            console.log(JSON.stringify("Adding a task to be ignored: " + curr_uid));
+        }
+
+        set_ignored_task(curr_ignored);
+
+        for (var i=0; i < tasks.length; i++) {
+            if (tasks[i].uid === curr_uid) {
+                tasks[i].isIgnored = isIgnored;
+            }
+        }
+
+        renum(tasks);
+    });
+}
+
+function get_ignored_tasks() {
+    let curr_ignored = localStorage.getItem('ignored_tasks_ls');
+    if (!curr_ignored) {
+        return [];
+    }
+
+    return JSON.parse(curr_ignored);
+}
+
+function set_ignored_task(tasks) {
+    localStorage.setItem('ignored_tasks_ls', JSON.stringify(tasks));
 }
