@@ -146,8 +146,9 @@ class Task {
         if(this.$obj.find(".course-theme-details__title").length !== 0) {
             this.name = this.$obj.find(".course-theme-details__title").text().trim();
         }
-        
-        this.uid = this.course + "_" + this.name + "_" + this.date.day + "_" + this.date.month;
+
+        let uid_raw = this.course + "_" + this.name + "_" + this.date.day + "_" + this.date.month;
+        this.uid = uid_raw.split("'").join("_").split('"').join("_");
 
         let curr_ignored = localStorage.getItem('ignored_tasks_ls') || [];
 
