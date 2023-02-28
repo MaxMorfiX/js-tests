@@ -66,13 +66,27 @@ function renum(tasks) {
         let color = tasks[i].isIgnored ? 'red' : 'green';
         let text = tasks[i].isIgnored ? 'ACT' : 'DEL';
         let opacity = tasks[i].isIgnored ? '0.4' : '1';
-        var counter_div = $j("<div class='task_number' style='position: relative; top: -20px; left: -120px; weight: bold;'>" + (i + 1) + "</div>");
+        let block_width = tasks[i].$obj.width(); // can not use properly - they have different width - crazy
+        
+        let shift_left = -130;
+        let append_div = tasks[i].$obj.find(".course-analytics-assessment-item__date");
+        if (!append_div.length) {
+            // this is a task w/o due date
+            append_div = tasks[i].$obj;
+            shift_left = -890;
+        }
+
+        var counter_div = $j("<div class='task_number' style='position: relative; top: -20px; left: " + shift_left + "px; weight: bold;'>"
+                              + (i + 1) +
+                              "</div>");
+        shift_left = shift_left - 20;
         var ignore_div = $j("<div data-uid='" + tasks[i].uid + "' class='ignore_task' \n\
-                                  style='position: relative; top: 12px; left: -140px; weight: bold; font-weight: bold; color: " + color + ";'>\n\
+                                  style='position: relative; top: 12px; left: " + shift_left + "px; weight: bold; font-weight: bold; color: " + color + ";'>\n\
                                 " + text + "\n\
                             </div>");
-        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(counter_div);
-        tasks[i].$obj.find(".course-analytics-assessment-item__date").append(ignore_div);
+        
+        append_div.append(counter_div);
+        append_div.append(ignore_div);
         
         tasks[i].$obj.css("opacity", opacity);
     }
