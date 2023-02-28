@@ -55,6 +55,8 @@ function main() {
 
     renum(tasks);
     init_ignore_link_handler(tasks);
+
+    console.table(tasks);
 }
 
 function renum(tasks) {
@@ -62,7 +64,7 @@ function renum(tasks) {
 
     for (var i=0; i < tasks.length; i++) {
         let color = tasks[i].isIgnored ? 'red' : 'green';
-        let text = tasks[i].isIgnored ? 'DEL' : 'ACT';
+        let text = tasks[i].isIgnored ? 'ACT' : 'DEL';
         let opacity = tasks[i].isIgnored ? '0.4' : '1';
         var counter_div = $j("<div class='task_number' style='position: relative; top: -20px; left: -120px; weight: bold;'>" + (i + 1) + "</div>");
         var ignore_div = $j("<div data-uid='" + tasks[i].uid + "' class='ignore_task' \n\
@@ -138,7 +140,7 @@ class Task {
         this.isIgnored = curr_ignored.includes(this.uid) ? 1  : 0;
         if (this.isIgnored) {
             // hasck as sorting by ignored flag is slow for some reason
-            this.date.month = 12;
+            this.date.month = 101;
         }
     }
 
